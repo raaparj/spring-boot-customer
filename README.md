@@ -42,7 +42,7 @@ This record ID can be used to list, update or delete the record added.<br>
 &nbsp;}
 </code>
 
-Be aware that the same record (as an identical JSON object) can be added and more than once and, if so, will be stored in the repository multiple times.<br>
+Be aware that the same record (as an identical JSON object) can be added more than once and, if so, will be stored in the repository multiple times.<br>
 Records will differ on the record id's, though.
 
 ##### Parameters
