@@ -248,7 +248,7 @@ class CustomerApplicationIntegrationTests {
         assertThat(customersInRepo).hasSizeGreaterThan(0);
         Integer firstCustomerRecordId = customersInRepo.get(0).getId();
 
-        // Check the value of the first record to be set to "bilbo.baggings@hotmail.com"
+        // Check the value of the first record not to be set to "bilbo.baggings@hotmail.com"
         Customer customerBeforeUpdate = customerRepository.findCustomerById(firstCustomerRecordId);
         assertThat(customerBeforeUpdate.getEmail()).isNotEqualTo("bilbo.baggings@hotmail.com");
 
