@@ -238,9 +238,6 @@ class CustomerApplicationIntegrationTests {
         assertThat(customerAfterUpdate.getStreet()).isEqualTo("Yellow Brick Road");
         assertThat(customerAfterUpdate.getCity()).isEqualTo("Emerald City");
 
-        // Clear repository
-        customerRepository.deleteAll();
-
     }
 
     @Test
