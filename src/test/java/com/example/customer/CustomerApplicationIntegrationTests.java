@@ -180,8 +180,8 @@ class CustomerApplicationIntegrationTests {
         // Check if the result also contains 2 records (Frodo Baggins and Bilbo Baggins)
         assertThat(customerArray).hasSize(2);
         List<Customer> customers = Arrays.asList(customerArray);
-        assertThat(customers).filteredOn(c -> c.getLastName().equals("Baggins"));
-
+        assertThat(customers.get(0).getFirstName()).isEqualTo("Bilbo");
+        assertThat(customers.get(1).getFirstName()).isEqualTo("Frodo");
     }
 
     @Test
@@ -203,6 +203,27 @@ class CustomerApplicationIntegrationTests {
         assertThat(customers.get(0).getFirstName()).isEqualTo("Bilbo");
 
     }
+
+    @Test
+    void givenRepoContainsBilbo_thenResponseWouldReturnBilboWhenSearchingForHisFirstNameAndLastName() {
+
+        // Get the number of records registered to a given email address; should be 1
+        List<Customer> customersHavingGivenEmailAddressRegistered = (List<Customer>) customerRepository.findByFirstNameAndLastNameAllIgnoreCase("Bilbo","Baggings");
+        assertThat(customersHavingGivenEmailAddressRegistered).hasSize(1);
+
+        // Get the same using the /search endpoint specifying the same address
+        String searchCustomerUrl = "http://localhost:8080/search?firstName=Bilbo&lastName=Baggings";
+        RestTemplate restTemplate = new RestTemplate();
+        Customer[] customerArray = restTemplate.getForObject(searchCustomerUrl, Customer[].class);
+
+        // Check if the number of records returned is also 1, if it's a Customer and if Bilbo is registered on it.
+        assertThat(customerArray).hasSize(1);
+        List<Customer> customers = Arrays.asList(customerArray);
+        assertThat(customers.get(0)).isInstanceOf(Customer.class);
+        assertThat(customers.get(0).getFirstName()).isEqualTo("Bilbo");
+
+    }
+
 
     @Test
     void givenRepoContainsAtLeastOneEntry_thenResponseWouldReturnTheFirstWithUpdateWhenDoingAnUpdateOfStreetAndCityOnRecord1() {
