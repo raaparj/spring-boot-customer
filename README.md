@@ -23,10 +23,11 @@ The JSON object offered in the POST must specify the <i>firstName</i>, <i>lastNa
 &nbsp;}
 </code>
 
-The value for the <code>age</code> field has to be a number and the <code>email</code> field has to be in a valid email address format.<br>
-They will be ignored if they aren't.<br>
-The values of the other fields are not validated.
-The values for all fields have to be String formatted.
+Be aware of the following with respect to the values of the fields in the JSON:
+* The value for the <code>age</code> field has to be a number and the <code>email</code> field has to be in a valid email address format.<br>
+They will be ignored if they aren't.
+* The values of the other fields are not validated.
+* The values for all fields have to be String formatted.
 
 The JSON object offered in the POST, if accepted, will be returned with addition of the record ID it is registered with.<br>
 The response will be in the format as shown below, which is the same format as the JSON object offered in the POST with the record ID in addition.<br>
