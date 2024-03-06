@@ -6,9 +6,11 @@ It has the following end-points available:
 #### Add a Customer
 
 <details>
- <summary><code>POST</code> <code><b>/add</b></code> <code>(adds a Customer object to the repository)</code></summary>
+ <summary><code>POST</code> <code><b>/add</b></code></summary>
 
-The JSON object posted must specify the <i>first name</i>, <i>last name</i>, <i>age</i>, <i>street</i>, <i>city</i> and <i>email address</i> of the customer to be registered:
+###### Adds a Customer object to the repository
+
+The JSON object offered in the POST must specify the <i>firstName</i>, <i>lastName</i>, <i>age</i>, <i>street</i>, <i>city</i> and <i>email</i> of the customer to be registered:
 
 <code>
 &nbsp;{<br>
@@ -21,7 +23,7 @@ The JSON object posted must specify the <i>first name</i>, <i>last name</i>, <i>
 &nbsp;}
 </code>
 
-The value for the <code>age</code> field has to be a number in digits and the <code>email</code> field has to be in a valid email address format.<br>
+The value for the <code>age</code> field has to be a number and the <code>email</code> field has to be in a valid email address format.<br>
 They will be ignored if they aren't.<br>
 The values of the other fields are not validated.
 The values for all fields have to be String formatted.
@@ -47,9 +49,9 @@ Records will differ on the record id's, though.
 
 ##### Parameters
 
-> | name      |  type     | data type               | description                                                           |
-> |-----------|-----------|-------------------------|-----------------------------------------------------------------------|
-> | None      |  required | object (JSON)   | N/A  |
+> | name      |  type     | data type          | description |
+> |-----------|-----------|--------------------|-------------|
+> | None      |  required | object (JSON)      | See above   |
 
 
 ##### Responses
@@ -58,7 +60,6 @@ Records will differ on the record id's, though.
 > |-----------|--------------------------|---------------------------------------------|
 > | `200`     | `application/json`       | Customer object added with record id (JSON) |
 > | `400`     | `application/json`       | `Bad request`                               |
-> | `415`     | `application/json`       | `Unsupported Media Type`                    |
 
 
 ##### Example cURL
@@ -73,51 +74,32 @@ Records will differ on the record id's, though.
 #### Update a Customer
 
 <details>
-  <summary><code>PUT</code> <code><b>/update/{id}?street={street}&city={city}</b></code> <code>(updates street and city in an existing record specified by its record id )</code></summary>
+  <summary><code>PUT</code> <code><b>/update/{id}</b></code></summary>
 
+###### Updates an existing record specified by its record id
 
-The response will be a JSON object in the format as shown below as it will be after the update<br>
+In the JSON object offered in the PUT the fields to be updated, being one or more of <i>firstName</i>, <i>lastName</i>, <i>age</i>, <i>street</i>, <i>city</i> or <i>email</i> of the customer record to be updated have to be specified.<br>
+If, for example, <i>age</i>, <i>street</i>, <i>city</i> and <i>email address</i> are to be updated, then the following JSON object should be offered:
 
 <code>
 &nbsp;{<br>
-&nbsp;&nbsp;  "id": "<i>id</i>",<br>
-&nbsp;&nbsp;  "firstName": "<i>first name</i>",<br>
-&nbsp;&nbsp;  "lastName": "<i>last name</i>",<br>
-&nbsp;&nbsp;  "age": "<i>61</i>",<br>
-&nbsp;&nbsp;  "street": "<i><b>street</b></i>",<br>
-&nbsp;&nbsp;  "city": "<i><b>city</b></i>",<br>
-&nbsp;&nbsp;  "email": "<i>email address</i>",<br>
+&nbsp;&nbsp;  "age": "<i>age</i>",<br>
+&nbsp;&nbsp;  "street": "<i>street</i>",<br>
+&nbsp;&nbsp;  "city": "<i>city</i>",<br>
+&nbsp;&nbsp;  "email": "<i>email address</i>"<br>
 &nbsp;}
 </code>
 
-##### Parameters
+Be aware of the following with respect to the fields specified:
+* The value for the <code>age</code> field has to be a number and the <code>email</code> field has to be in a valid email address format.<br>
+They will be ignored if they aren't in which case the existing values will not be updated.
+* The values of the other fields specified are not validated.
+* The values for all fields have to be String formatted.
 
-> | name     |  type     | data type | description                                     |
-> |----------|-----------|-----------|-------------------------------------------------|
-> | `id`     |  required | int       | The id of the record to be updated              |
-> | `street` |  required | String    | The new value for the <code>street</code> field |
-> | `city`   |  required | String    | The new value for the <code>city</code> field   |
+The values of the fields not specified in the JSON object will not be updated.
 
-##### Responses
-
-> | http code | content-type             | response                           |
-> |-----------|--------------------------|------------------------------------|
-> | `200`     | `application/json`       | Customer object updated (JSON)     |
-> | `500`     | `application/json`       | `No record found for ID specified` |
-
-
-##### Example cURL
-
-> ```curl
->  curl -X PUT http://localhost:8080/update/1?street=Abbey%20Road%201&city=Liverpool
-> ```
-
-</details>
-
-<details>
-  <summary><code>PUT</code> <code><b>/update/{id}?email={email}</b></code> <code>(updates email in an existing record specified by its record id )</code></summary>
-
-The response will be a JSON object in the format as shown below as it will be after the update<br>
+The JSON object offered in the PUT is accepted, a JSON object containing all fields with the values as they were _before_ the update will be returned.<br>
+The response will be in the format as shown below.<br>
 
 <code>
 &nbsp;{<br>
@@ -127,37 +109,41 @@ The response will be a JSON object in the format as shown below as it will be af
 &nbsp;&nbsp;  "age": "<i>61</i>",<br>
 &nbsp;&nbsp;  "street": "<i>street</i>",<br>
 &nbsp;&nbsp;  "city": "<i>city</i>",<br>
-&nbsp;&nbsp;  "email": "<i><b>email address</b></i>",<br>
+&nbsp;&nbsp;  "email": "<i>email address</i>",<br>
 &nbsp;}
 </code>
 
 ##### Parameters
 
-> | name    |  type     | data type | description                                    |
-> |---------|-----------|-----------|------------------------------------------------|
-> | `id`    |  required | int       | The id of the record to be updated             |
-> | `email` |  required | String    | The new value for the <code>email</code> field |
+> | name |  type     | data type      | description                        |
+> |------|-----------|----------------|------------------------------------|
+> | `id` |  required | int            | The id of the record to be updated |
+> | None |  required | object (JSON)  | See above                          |
 
 ##### Responses
 
 > | http code | content-type             | response                           |
 > |-----------|--------------------------|------------------------------------|
 > | `200`     | `application/json`       | Customer object updated (JSON)     |
+> | `400`     | `application/json`       | `Bad request`                      |
 > | `500`     | `application/json`       | `No record found for ID specified` |
 
 
 ##### Example cURL
 
 > ```curl
->  curl -X PUT http://localhost:8080/update/1?email=paul.mccartney@gmail.com
+>  curl -X PUT -H "Content-Type: application/json" --data @customer.json  http://localhost:8080/update/1
 > ```
 
 </details>
 
+
 #### Delete a Customer
 
 <details>
-  <summary><code>DELETE</code> <code><b>/delete/{id}</b></code> <code>(deletes an existing record specified by its record id )</code></summary>
+  <summary><code>DELETE</code> <code><b>/delete/{id}</b></code></summary>
+
+###### Deletes an existing record specified by its record id
 
 The response will be the object deleted in the JSON format as shown below if it exists<br>
 
@@ -198,8 +184,9 @@ The response will be the object deleted in the JSON format as shown below if it 
 #### Search a Customer
 
 <details>
-  <summary><code>GET</code> <code><b>/search?street={street}&city={city}</b></code> <code>(find customer records on street and city )</code></summary>
+  <summary><code>GET</code> <code><b>/search?street={street}&city={city}</b></code></summary>
 
+###### Find customer records on street and city
 
 The response will be a JSON array with JSON objects in the format as shown below for each Customer record matching the search criteria.<br>
 
@@ -240,8 +227,9 @@ The JSON array will be empty if no records can be found matching the search crit
 </details>
 
 <details>
-  <summary><code>GET</code> <code><b>/search?email={email}</b></code> <code>(find customer records on email address )</code></summary>
+  <summary><code>GET</code> <code><b>/search?email={email}</b></code></summary>
 
+###### Find customer records on email address
 
 The response will be a JSON array with JSON objects in the format as shown below for each Customer record matching the search criteria.<br>
 
@@ -281,8 +269,9 @@ The JSON array will be empty if no records can be found matching the search crit
 </details>
 
 <details>
-  <summary><code>GET</code> <code><b>/search?firstName={first name}&lastName={last name}</b></code> <code>(find customer records on first name and last name )</code></summary>
+  <summary><code>GET</code> <code><b>/search?firstName={first name}&lastName={last name}</b></code></summary>
 
+###### Find customer records on first name and last name
 
 The response will be a JSON array with JSON objects in the format as shown below for each Customer record matching the search criteria.<br>
 
@@ -322,7 +311,7 @@ The JSON array will be empty if no records can be found matching the search crit
 
 </details>
 
-#### List (a) Customer(s) 
+#### List a Customer 
 
 <details>
   <summary><code>GET</code> <code><b>/list/{id}</b></code> <code>(lists an existing record specified by its record id )</code></summary>
@@ -362,6 +351,8 @@ The response will be the object specified in the JSON format as shown below if i
 > ```
 
 </details>
+
+#### List all Customers
 
 <details>
   <summary><code>GET</code> <code><b>/list</b></code> <code>(lists all records in the Customer repository )</code></summary>

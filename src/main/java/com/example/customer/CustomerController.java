@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import static com.example.customer.Customer.isNumeric;
+import static com.example.customer.Customer.isValidEmailAddress;
+
 
 @RestController
 public class CustomerController {
@@ -24,21 +27,20 @@ public class CustomerController {
         return customerRepository.save(customer);
     }
 
-    @PutMapping(path = "/update/{id}", produces = "application/json", params = {"street","city"})
-    public Customer updateCustomerOnStreetAndCityById (@PathVariable Integer id, @RequestParam("street") String street, @RequestParam("city") String city ) throws IllegalArgumentException {
+    @PutMapping(path = "/update/{id}", consumes = "application/json", produces = "application/json")
+    public Customer updateCustomerById (@PathVariable Integer id, @RequestBody Customer customer ) throws IllegalArgumentException {
         if (customerRepository.existsByIdAllIgnoreCase(id)) {
-            customerRepository.updateStreetAndCityById(street, city, id);
-            return customerRepository.findCustomerById(id);
-        } else {
-            throw new IllegalArgumentException("No record found for ID specified");
-        }
-    }
-
-    @PutMapping(path = "/update/{id}", produces = "application/json", params = {"email"})
-    public Customer updateCustomerOnEmailById (@PathVariable Integer id, @RequestParam("email") String email ) throws IllegalArgumentException {
-        if (customerRepository.existsByIdAllIgnoreCase(id)) {
-            customerRepository.updateEmailById(email, id);
-            return customerRepository.findCustomerById(id);
+            Customer repositoryCustomer = customerRepository.findCustomerById(id);
+            customerRepository.updateFirstNameAndLastNameAndAgeAndStreetAndCityAndEmailById(
+                    customer.getFirstName() == null ? repositoryCustomer.getFirstName(): customer.getFirstName(),
+                    customer.getLastName() == null ? repositoryCustomer.getLastName() : customer.getLastName(),
+                    customer.getAge() == null || !isNumeric(customer.getAge())? repositoryCustomer.getAge() : customer.getAge(),
+                    customer.getStreet() == null ? repositoryCustomer.getStreet() : customer.getStreet(),
+                    customer.getCity() == null ? repositoryCustomer.getCity() : customer.getCity(),
+                    customer.getEmail() == null || !isValidEmailAddress(customer.getEmail())? repositoryCustomer.getEmail() : customer.getEmail(),
+                    id
+            );
+            return repositoryCustomer;
         } else {
             throw new IllegalArgumentException("No record found for ID specified");
         }

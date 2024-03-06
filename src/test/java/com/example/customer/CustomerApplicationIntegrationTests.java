@@ -69,6 +69,10 @@ class CustomerApplicationIntegrationTests {
     @Test
     void givenDataIsJson_whenDataIsPostedByPostForObject_thenResponseBodyIsRecordAdded() {
 
+        /*
+            Test a record is added to the repo using /add
+         */
+
         // Add Samwise Gamgee to the repository using the /add endpoint
         JSONObject customerJsonObject = createCustomerJsonObject("Samwise", "Gamgee", "35", "Main road", "Hobbiton", "samwise.gamgee@gmail.com");
 
@@ -104,6 +108,10 @@ class CustomerApplicationIntegrationTests {
     @Test
     void givenRepoContainsMultipleEntries_thenResponseBodyReturnsThemWhenListed() {
 
+        /*
+            Test if all records in the repo are returned when using /list
+         */
+
         // Check number of records in the repo to be 2
         Iterable<Customer> customersInRepo = customerRepository.findAll();
         assertThat(customersInRepo).hasSize(2);
@@ -120,6 +128,10 @@ class CustomerApplicationIntegrationTests {
 
     @Test
     void givenRepoContainsAtLeastOneEntry_thenResponseWouldReturnTheFirstWhenDoingGetListOnIt() {
+
+        /*
+            Test if a record is returned when specified by its id using /list/{id}
+         */
 
         // Check if there is at least one record in the repo and get its ID
         List<Customer> customersInRepo = (List<Customer>) customerRepository.findAll();
@@ -140,12 +152,16 @@ class CustomerApplicationIntegrationTests {
     @Test
     void givenRepoContainsAtLeastOneEntry_thenResponseWouldReturnTheFirstWhenDeletingIt() {
 
+        /*
+            Test if a record is deleted when specified by its id using /delete/{id}
+         */
+
         // Check if there is at least one record in the repo and get its ID
         List<Customer> customersInRepo = (List<Customer>) customerRepository.findAll();
         assertThat(customersInRepo).hasSizeGreaterThan(0);
         Integer firstCustomerRecordId = customersInRepo.get(0).getId();
 
-        // Prepare URL to update the first record using the /delete/{id} endpoint
+        // Prepare URL to delete the first record in the repo using the /delete/{id} endpoint
         String deleteRecordGivenIDUrl= "http://localhost:8080/delete/" + firstCustomerRecordId;
 
         // Set an empty HTTP header in an empty HTTP Entity before issuing the DELETE on the /delete endpoint
@@ -168,6 +184,10 @@ class CustomerApplicationIntegrationTests {
     @Test
     void givenRepoContainsMultipleEntriesWithTheSameAddress_thenResponseWouldReturnBilboAndFrodoWhenSearchingForAddress() {
 
+        /*
+            Test if multiple records are returned when searching with address (street, city) using /search?street={street}&city={city}
+         */
+
         // Get the number of records registered to a given address (street and city); should be 2
         List<Customer> customersOnOneAddress = (List<Customer>) customerRepository.findByStreetAndCityAllIgnoreCase("Bag End", "Hobbiton");
         assertThat(customersOnOneAddress).hasSize(2);
@@ -185,7 +205,12 @@ class CustomerApplicationIntegrationTests {
     }
 
     @Test
-    void givenRepoContainsBilbo_thenResponseWouldReturnBilboWhenSearchingForHisEmail() {
+    void givenRepoContainsAtLeastOneEntryHavingBilBo_thenResponseWouldReturnBilboWhenSearchingForHisEmail() {
+
+        /*
+            Test if a record is returned when searching with email using /search?email={email}
+         */
+
 
         // Get the number of records registered to a given email address; should be 1
         List<Customer> customersHavingGivenEmailAddressRegistered = (List<Customer>) customerRepository.findByEmailIgnoreCase("bilbo.baggings@gmail.com");
@@ -207,7 +232,11 @@ class CustomerApplicationIntegrationTests {
     @Test
     void givenRepoContainsBilbo_thenResponseWouldReturnBilboWhenSearchingForHisFirstNameAndLastName() {
 
-        // Get the number of records registered to the firstName and lastName given; should be 1
+        /*
+            Test if a record is returned when searching with first name and last name using /search?firstName={firstName}&lastName={lastName}
+         */
+
+        // Get the number of records registered in the repository when searched for given the firstName and lastName; should be 1
         List<Customer> customersHavingGivenEmailAddressRegistered = (List<Customer>) customerRepository.findByFirstNameAndLastNameAllIgnoreCase("Bilbo","Baggings");
         assertThat(customersHavingGivenEmailAddressRegistered).hasSize(1);
 
@@ -226,7 +255,11 @@ class CustomerApplicationIntegrationTests {
 
 
     @Test
-    void givenRepoContainsAtLeastOneEntry_thenResponseWouldReturnTheFirstWithUpdateWhenDoingAnUpdateOfStreetAndCityOnRecord1() {
+    void givenRepoContainsAtLeastOneEntry_thenResponseWouldReturnTheRecordBeforeUpdateWhenDoingAnUpdateOfStreetAndCityByRecordID() {
+
+        /*
+            Test that record in repo is updated on street and city and the record before update is returned using /update/{id}
+         */
 
         // Check if there is at least one record in the repo and get its ID
         List<Customer> customersInRepo = (List<Customer>)  customerRepository.findAll();
@@ -238,21 +271,38 @@ class CustomerApplicationIntegrationTests {
         assertThat(customerBeforeUpdate.getStreet()).isNotEqualTo("Yellow Brick Road");
         assertThat(customerBeforeUpdate.getCity()).isNotEqualTo("Emerald City");
 
-        // Prepare URL to update the first record using the /update/1 endpoint
-        String updateFirstRecordCustomerUrl= "http://localhost:8080/update/"+ firstCustomerRecordId + "?street=Yellow Brick Road&city=Emerald City";
+        // Prepare URL to update the first record using the /update/{id} endpoint
+        String updateFirstRecordCustomerUrl= "http://localhost:8080/update/"+ firstCustomerRecordId;
 
-        // Set an empty HTTP header in an empty HTTP Entity before issuing the PUT on the /update endpoint
+        // Prepare a JSON object for an update on street and city
+        JSONObject customerJSONObject = new JSONObject();
+
+        try {
+            customerJSONObject.put("street", "Yellow Brick Road");
+            customerJSONObject.put("city", "Emerald City");
+        }
+        catch (JSONException jsonException) {
+            throw new RuntimeException("Cannot create JSON object");
+        }
+
+        // Set an HTTP header with an HTTP Entity before issuing the PUT on the /update/{id} endpoint
+
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
-        HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
+        HttpEntity<String> requestEntity =
+                new HttpEntity<>(customerJSONObject.toString(), headers);
+
         HttpEntity<Customer> response = restTemplate.exchange(updateFirstRecordCustomerUrl, HttpMethod.PUT, requestEntity, Customer.class);
         Customer customer = response.getBody();
 
-        // The record returned should be the first record (having record ID stored in firstCustomerRecordId) and have the values for "street" and "city" updated.
+        // The record returned should be the first record (having record ID stored in firstCustomerRecordId) having the values for street and city as they were before the update.
         assertNotNull(customer);
         assertThat(customer.getId()).isEqualTo(firstCustomerRecordId);
-        assertThat(customer.getStreet()).isEqualTo("Yellow Brick Road");
-        assertThat(customer.getCity()).isEqualTo("Emerald City");
+        assertThat(customer.getStreet()).isEqualTo(customerBeforeUpdate.getStreet());
+        assertThat(customer.getCity()).isEqualTo(customerBeforeUpdate.getCity());
 
         // Check the values for street and city of the first record in the repo now to be set to "Yellow Brick Road" and "Emerald City", respectively
         Customer customerAfterUpdate = customerRepository.findCustomerById(firstCustomerRecordId);
@@ -262,36 +312,97 @@ class CustomerApplicationIntegrationTests {
     }
 
     @Test
-    void givenRepoContainsAtLeastOneEntry_thenResponseWouldReturnTheFirstWithUpdateWhenDoingAnUpdateOfEmailOnRecord1() {
+    void givenRepoContainsAtLeastOneEntry_thenRepoWouldNotBeUpdatedWhenDoingAnUpdateOfEmailByRecordIdWithAnInvalidEmailFormat() {
+
+        /*
+            Test if email is not updated when specifying an email having an invalid format (not an email address) using /update/{id}
+         */
 
         // Check if there is at least one record in the repo and get its ID
         List<Customer> customersInRepo = (List<Customer>) customerRepository.findAll();
         assertThat(customersInRepo).hasSizeGreaterThan(0);
         Integer firstCustomerRecordId = customersInRepo.get(0).getId();
 
-        // Check the value of the first record not to be set to "bilbo.baggings@hotmail.com"
+        // Get the first record before doing the update
         Customer customerBeforeUpdate = customerRepository.findCustomerById(firstCustomerRecordId);
-        assertThat(customerBeforeUpdate.getEmail()).isNotEqualTo("bilbo.baggings@hotmail.com");
 
-        // Prepare URL to update the first record using the /update/1 endpoint
-        String updateFirstRecordCustomerUrl= "http://localhost:8080/update/" + firstCustomerRecordId + "?email=bilbo.baggings@hotmail.com";
+        // Prepare URL to update the first record using the /update/{id} endpoint
+        String updateFirstRecordCustomerUrl= "http://localhost:8080/update/" + firstCustomerRecordId;
 
-        // Set an empty HTTP header in an empty HTTP Entity before issuing the PUT on the /update endpoint
+        // Prepare a JSON object for an update on email using an invalid format
+        JSONObject customerJSONObject = new JSONObject();
+
+        try {
+            customerJSONObject.put("email", "NotAnEmailAddress");
+        }
+        catch (JSONException jsonException) {
+            throw new RuntimeException("Cannot create JSON object");
+        }
+
+        // Set an HTTP header with an HTTP Entity before issuing the PUT on the /update/{id} endpoint
+
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
-        HttpEntity<?> requestEntity = new HttpEntity<>(headers);
-        HttpEntity<Customer> response = restTemplate.exchange(updateFirstRecordCustomerUrl, HttpMethod.PUT, requestEntity, Customer.class);
-        Customer customer = response.getBody();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
 
-        // The record returned should be the first record (having record ID stored in firstCustomerRecordId) and have the value for "email" updated.
-        assertNotNull(customer);
-        assertThat(customer.getId()).isEqualTo(firstCustomerRecordId);
-        assertThat(customer.getEmail()).isEqualTo("bilbo.baggings@hotmail.com");
+        HttpEntity<String> requestEntity =
+                new HttpEntity<>(customerJSONObject.toString(), headers);
 
-        // Check the value for email of the first record in the repo now to be set to "bilbo.baggings@hotmail.com"
+        restTemplate.exchange(updateFirstRecordCustomerUrl, HttpMethod.PUT, requestEntity, Customer.class);
+
+        // Check the value for email of the record in the repo to be unchanged
         Customer customerAfterUpdate = customerRepository.findCustomerById(firstCustomerRecordId);
-        assertThat(customerAfterUpdate.getEmail()).isEqualTo("bilbo.baggings@hotmail.com");
+        assertThat(customerAfterUpdate.getEmail()).isEqualTo(customerBeforeUpdate.getEmail());
 
     }
+
+    @Test
+    void givenRepoContainsAtLeastOneEntry_thenRepoWouldNotBeUpdatedWhenDoingAnUpdateOfAgeByRecordIdWithAnInvalidAgeFormat() {
+
+         /*
+            Test if email is not updated when specifying an age having an invalid format (not a number) using /update/{id}
+          */
+
+
+        // Check if there is at least one record in the repo and get its ID
+        List<Customer> customersInRepo = (List<Customer>) customerRepository.findAll();
+        assertThat(customersInRepo).hasSizeGreaterThan(0);
+        Integer firstCustomerRecordId = customersInRepo.get(0).getId();
+
+        // Get the first record before doing the update
+        Customer customerBeforeUpdate = customerRepository.findCustomerById(firstCustomerRecordId);
+
+        // Prepare URL to update the first record using the /update/{id} endpoint
+        String updateFirstRecordCustomerUrl= "http://localhost:8080/update/" + firstCustomerRecordId;
+
+        // Prepare a JSON object for an update on age using an invalid format
+        JSONObject customerJSONObject = new JSONObject();
+
+        try {
+            customerJSONObject.put("age", "Not A Number");
+        }
+        catch (JSONException jsonException) {
+            throw new RuntimeException("Cannot create JSON object");
+        }
+
+        // Set an HTTP header with an HTTP Entity before issuing the PUT on the /update/{id} endpoint
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
+        HttpEntity<String> requestEntity =
+                new HttpEntity<>(customerJSONObject.toString(), headers);
+
+        restTemplate.exchange(updateFirstRecordCustomerUrl, HttpMethod.PUT, requestEntity, Customer.class);
+
+        // Check the value for age of the record in the repo to be unchanged
+        Customer customerAfterUpdate = customerRepository.findCustomerById(firstCustomerRecordId);
+        assertThat(customerAfterUpdate.getAge()).isEqualTo(customerBeforeUpdate.getAge());
+
+    }
+
 
 }

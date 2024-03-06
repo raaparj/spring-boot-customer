@@ -6,17 +6,15 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface CustomerRepository extends CrudRepository<Customer, Integer> {
+
     boolean existsByIdAllIgnoreCase(Integer id);
 
     @Transactional
     @Modifying
-    @Query("update Customer c set c.street = ?1, c.city = ?2 where c.id = ?3")
-    void updateStreetAndCityById(String street, String city, Integer id);
-
-    @Transactional
-    @Modifying
-    @Query("update Customer c set c.email = ?1 where c.id = ?2")
-    void updateEmailById(String email, Integer id);
+    @Query("""
+            update Customer c set c.firstName = ?1, c.lastName = ?2, c.age = ?3, c.street = ?4, c.city = ?5, c.email = ?6
+            where c.id = ?7""")
+    void updateFirstNameAndLastNameAndAgeAndStreetAndCityAndEmailById(String firstName, String lastName, String age, String street, String city, String email, Integer id);
 
     Iterable<Customer> findByStreetAndCityAllIgnoreCase(String street, String city);
 
@@ -26,6 +24,4 @@ public interface CustomerRepository extends CrudRepository<Customer, Integer> {
 
     Customer findCustomerById(Integer id);
 
-    @Override
-    void deleteById(Integer integer);
 }
