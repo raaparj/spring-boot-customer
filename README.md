@@ -99,7 +99,7 @@ They will be ignored if they aren't in which case the existing values will not b
 
 The values of the fields not specified in the JSON object will not be updated.
 
-The JSON object offered in the PUT is accepted, a JSON object containing all fields with the values as they were _before_ the update will be returned.<br>
+If the JSON object offered in the PUT is accepted, then a JSON object containing all fields with the values as they were _before_ the update will be returned.<br>
 The response will be in the format as shown below.<br>
 
 <code>
