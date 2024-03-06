@@ -99,7 +99,7 @@ They will be ignored if they aren't in which case the existing values will not b
 
 The values of the fields not specified in the JSON object will not be updated.
 
-The JSON object offered in the PUT is accepted, a JSON object containing all fields with the values as they were _before_ the update will be returned.<br>
+If the JSON object offered in the PUT is accepted, then a JSON object containing all fields with the values as they were _before_ the update will be returned.<br>
 The response will be in the format as shown below.<br>
 
 <code>
@@ -315,7 +315,9 @@ The JSON array will be empty if no records can be found matching the search crit
 #### List a Customer 
 
 <details>
-  <summary><code>GET</code> <code><b>/list/{id}</b></code> <code>(lists an existing record specified by its record id )</code></summary>
+  <summary><code>GET</code> <code><b>/list/{id}</b></code></summary>
+
+###### Lists an existing record specified by its record id
 
 The response will be the object specified in the JSON format as shown below if it exists<br>
 
@@ -356,7 +358,9 @@ The response will be the object specified in the JSON format as shown below if i
 #### List all Customers
 
 <details>
-  <summary><code>GET</code> <code><b>/list</b></code> <code>(lists all records in the Customer repository )</code></summary>
+  <summary><code>GET</code> <code><b>/list</b></code></summary>
+
+###### Lists all records in the Customer repository
 
 The response will be a JSON array with JSON objects in the format as shown below for each Customer record in the repository.<br>
 
