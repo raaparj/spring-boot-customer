@@ -317,7 +317,7 @@ The JSON array will be empty if no records can be found matching the search crit
 <details>
   <summary><code>GET</code> <code><b>/list/{id}</b></code></summary>
 
-###### Lists an existing record specified by its record id
+###### Lists an existing customer record specified by its record id
 
 The response will be the object specified in the JSON format as shown below if it exists<br>
 
