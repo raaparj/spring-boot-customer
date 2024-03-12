@@ -48,9 +48,8 @@ public class CustomerController {
 
     @DeleteMapping(path = "/delete/{id}", produces = "application/json" )
     public Customer deleteCustomerById(@PathVariable Integer id) throws IllegalArgumentException {
-        Customer customer;
         if (customerRepository.existsByIdAllIgnoreCase(id)) {
-            customer = customerRepository.findCustomerById(id);
+            Customer customer = customerRepository.findCustomerById(id);
             customerRepository.deleteById(id);
             return customer;
         } else {
