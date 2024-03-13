@@ -1,6 +1,6 @@
 ## Customer application REST API specification
 
-This is a sample Customer application to store, search, update and delete customer data.<br>
+This is a simple Customer application to store, search, update and delete customer data.<br>
 It has the following end-points available: 
 
 #### Add a Customer
