@@ -191,7 +191,7 @@ The response will be the object deleted in the JSON format as shown below if it 
 
 The response will be a JSON array with JSON objects in the format as shown below for each Customer record matching the search criteria.<br>
 
-<code>
+<code>[<br>
 &nbsp;{<br>
 &nbsp;&nbsp;  "id": "<i>id</i>",<br>
 &nbsp;&nbsp;  "firstName": "<i>first name</i>",<br>
@@ -200,8 +200,8 @@ The response will be a JSON array with JSON objects in the format as shown below
 &nbsp;&nbsp;  "street": "<i><b>street</b></i>",<br>
 &nbsp;&nbsp;  "city": "<i><b>city</b></i>",<br>
 &nbsp;&nbsp;  "email": "<i>email address</i>",<br>
-&nbsp;}
-</code>
+&nbsp;}<br>
+]</code>
 
 The JSON array will be empty if no records can be found matching the search criteria.
 
@@ -234,7 +234,7 @@ The JSON array will be empty if no records can be found matching the search crit
 
 The response will be a JSON array with JSON objects in the format as shown below for each Customer record matching the search criteria.<br>
 
-<code>
+<code>[<br> 
 &nbsp;{<br>
 &nbsp;&nbsp;  "id": "<i>id</i>",<br>
 &nbsp;&nbsp;  "firstName": "<i>first name</i>",<br>
@@ -243,8 +243,8 @@ The response will be a JSON array with JSON objects in the format as shown below
 &nbsp;&nbsp;  "street": "<i>street</i>",<br>
 &nbsp;&nbsp;  "city": "<i>city</i>",<br>
 &nbsp;&nbsp;  "email": "<i><b>email address</b></i>",<br>
-&nbsp;}
-</code>
+&nbsp;}<br>
+]</code>
 
 The JSON array will be empty if no records can be found matching the search criteria.
 
@@ -276,7 +276,7 @@ The JSON array will be empty if no records can be found matching the search crit
 
 The response will be a JSON array with JSON objects in the format as shown below for each Customer record matching the search criteria.<br>
 
-<code>
+<code>[<br>
 &nbsp;{<br>
 &nbsp;&nbsp;  "id": "<i>id</i>",<br>
 &nbsp;&nbsp;  "firstName": "<i><b>first name</b></i>",<br>
@@ -285,8 +285,8 @@ The response will be a JSON array with JSON objects in the format as shown below
 &nbsp;&nbsp;  "street": "<i>street</i>",<br>
 &nbsp;&nbsp;  "city": "<i>city</i>",<br>
 &nbsp;&nbsp;  "email": "<i>email address</i>",<br>
-&nbsp;}
-</code>
+&nbsp;}<br>
+]</code>
 
 The JSON array will be empty if no records can be found matching the search criteria.
 
@@ -321,8 +321,7 @@ The JSON array will be empty if no records can be found matching the search crit
 
 The response will be the object specified in the JSON format as shown below if it exists<br>
 
-<code>
-&nbsp;{<br>
+<code>&nbsp;{<br>
 &nbsp;&nbsp;  "id": "<i><b>id</b></i>",<br>
 &nbsp;&nbsp;  "firstName": "<i>first name</i>",<br>
 &nbsp;&nbsp;  "lastName": "<i>last name</i>",<br>
@@ -330,8 +329,7 @@ The response will be the object specified in the JSON format as shown below if i
 &nbsp;&nbsp;  "street": "<i>street</i>",<br>
 &nbsp;&nbsp;  "city": "<i>city</i>",<br>
 &nbsp;&nbsp;  "email": "<i>email address</i>",<br>
-&nbsp;}
-</code>
+&nbsp;}</code>
 
 ##### Parameters
 
@@ -364,7 +362,7 @@ The response will be the object specified in the JSON format as shown below if i
 
 The response will be a JSON array with JSON objects in the format as shown below for each Customer record in the repository.<br>
 
-<code>
+<code>[<br>
 &nbsp;{<br>
 &nbsp;&nbsp;  "id": "<i>id</i>",<br>
 &nbsp;&nbsp;  "firstName": "<i><b>first name</b></i>",<br>
@@ -373,8 +371,8 @@ The response will be a JSON array with JSON objects in the format as shown below
 &nbsp;&nbsp;  "street": "<i>street</i>",<br>
 &nbsp;&nbsp;  "city": "<i>city</i>",<br>
 &nbsp;&nbsp;  "email": "<i>email address</i>",<br>
-&nbsp;}
-</code>
+&nbsp;}<br>
+]</code>
 
 The JSON array will be empty if the repository has no records.
 
